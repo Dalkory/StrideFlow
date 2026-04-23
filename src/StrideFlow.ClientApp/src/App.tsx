@@ -11,10 +11,13 @@ import {
 import { HubConnectionBuilder, LogLevel } from '@microsoft/signalr'
 import {
   Activity,
+  BadgeCheck,
   Clock3,
   Flame,
   Footprints,
+  Gauge,
   LogOut,
+  Medal,
   Pause,
   Play,
   RadioTower,
@@ -22,6 +25,7 @@ import {
   ShieldCheck,
   Sparkles,
   Square,
+  Target,
   Trophy,
   Users,
   Waves,
@@ -48,6 +52,7 @@ import {
 } from './lib/format'
 import type {
   AdSlotResponse,
+  ActivityInsightsResponse,
   AuthSession,
   LeaderboardEntryResponse,
   LeaderboardPeriod,
@@ -187,6 +192,7 @@ function App() {
   const [history, setHistory] = useState<WalkingSessionResponse[]>([])
   const [currentSession, setCurrentSession] = useState<WalkingSessionDetailResponse | null>(null)
   const [leaderboard, setLeaderboard] = useState<LeaderboardResponse | null>(null)
+  const [insights, setInsights] = useState<ActivityInsightsResponse | null>(null)
   const [leaderboardPeriod, setLeaderboardPeriod] = useState<LeaderboardPeriod>('week')
   const [leaderboardCity, setLeaderboardCity] = useState('all')
   const deferredLeaderboardCity = useDeferredValue(leaderboardCity)
@@ -234,6 +240,7 @@ function App() {
       historyResponse: WalkingSessionResponse[],
       liveMapResponse: LiveSessionResponse[],
       adSlotsResponse: AdSlotResponse[],
+      insightsResponse: ActivityInsightsResponse,
     ) => {
       startTransition(() => {
         setAuthSession(apiClient.getSession())
@@ -249,6 +256,7 @@ function App() {
           liveMapResponse.length > 0 ? liveMapResponse : dashboardResponse.active_walkers,
         )
         setAdSlots(adSlotsResponse.length > 0 ? adSlotsResponse : dashboardResponse.ad_slots)
+        setInsights(insightsResponse)
       })
     },
   )
@@ -261,13 +269,20 @@ function App() {
     setWorkspaceLoading(true)
 
     try {
-      const [dashboardResponse, profileResponse, historyResponse, liveMapResponse, adSlotsResponse] =
-        await Promise.all([
+      const [
+        dashboardResponse,
+        profileResponse,
+        historyResponse,
+        liveMapResponse,
+        adSlotsResponse,
+        insightsResponse,
+      ] = await Promise.all([
           apiClient.getDashboard(),
           apiClient.getProfile(),
           apiClient.getHistory(),
           apiClient.getLiveMap(),
           apiClient.getAdSlots(),
+          apiClient.getInsights(),
         ])
 
       applyWorkspace(
@@ -276,6 +291,7 @@ function App() {
         historyResponse,
         liveMapResponse,
         adSlotsResponse,
+        insightsResponse,
       )
     } catch (error) {
       if (error instanceof ApiError && error.status === 401) {
@@ -285,6 +301,7 @@ function App() {
         setProfile(null)
         setProfileDraft(null)
         setCurrentSession(null)
+        setInsights(null)
         return
       }
 
@@ -822,6 +839,9 @@ function App() {
   const weeklyTrend = dashboard?.weekly_trend ?? []
   const trendMax = Math.max(1, ...weeklyTrend.map((item) => item.steps))
   const visibleLeaderboard = leaderboard ?? dashboard?.leaderboard ?? null
+  const weeklyReward = insights?.rewards.weekly
+  const monthlyReward = insights?.rewards.monthly
+  const achievements = insights?.coach.achievements ?? []
   const visibleLiveSessions = liveSessions.length > 0 ? liveSessions : dashboard?.active_walkers ?? []
   const visibleAds = adSlots.length > 0 ? adSlots : dashboard?.ad_slots ?? []
   const currentStatusText = currentSession
@@ -1298,6 +1318,95 @@ function App() {
                 ))}
               </div>
             </article>
+
+            {insights ? (
+              <article className="surface section-card">
+                <div className="section-heading">
+                  <span className="eyebrow">Smart coach</span>
+                  <strong>Actionable plan for today</strong>
+                </div>
+
+                <div className="coach-panel">
+                  <Gauge size={24} />
+                  <div>
+                    <strong>{insights.coach.message}</strong>
+                    <span>
+                      {formatNumber(insights.coach.remaining_steps_today)} steps left, about{' '}
+                      {formatNumber(insights.coach.suggested_steps_per_hour)} per active hour.
+                    </span>
+                  </div>
+                </div>
+
+                <div className="mini-metrics mini-metrics--two">
+                  <div>
+                    <Target size={18} />
+                    <div>
+                      <strong>{formatPercent(insights.coach.consistency_score)}</strong>
+                      <span>weekly consistency</span>
+                    </div>
+                  </div>
+                  <div>
+                    <Activity size={18} />
+                    <div>
+                      <strong>{formatNumber(insights.coach.weekly_average_steps)}</strong>
+                      <span>avg steps/day</span>
+                    </div>
+                  </div>
+                </div>
+
+                <div className="achievement-list">
+                  {achievements.map((achievement) => (
+                    <div
+                      key={achievement.key}
+                      className={
+                        achievement.is_unlocked
+                          ? 'achievement-item achievement-item--unlocked'
+                          : 'achievement-item'
+                      }
+                    >
+                      <BadgeCheck size={18} />
+                      <div>
+                        <strong>{achievement.title}</strong>
+                        <span>{achievement.description}</span>
+                      </div>
+                      <small>{formatPercent(achievement.progress_percent)}</small>
+                    </div>
+                  ))}
+                </div>
+              </article>
+            ) : null}
+
+            {weeklyReward && monthlyReward ? (
+              <article className="surface section-card reward-center">
+                <div className="section-heading">
+                  <span className="eyebrow">Reward center</span>
+                  <strong>Telegram Stars preview</strong>
+                </div>
+
+                <p className="section-card__copy">{insights?.rewards.settlement_policy}</p>
+
+                <div className="standing-grid">
+                  {[weeklyReward, monthlyReward].map((standing) => (
+                    <div key={standing.period} className="standing-card">
+                      <Medal size={20} />
+                      <div>
+                        <strong>
+                          {standing.period} #{standing.rank}
+                        </strong>
+                        <span>
+                          {formatNumber(standing.steps)} steps in {standing.city}
+                        </span>
+                        <small>
+                          {standing.telegram_stars
+                            ? `${standing.telegram_stars} Telegram Stars in test mode`
+                            : 'More steps needed for reward eligibility'}
+                        </small>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </article>
+            ) : null}
 
             <article className="surface section-card">
               <div className="section-heading">

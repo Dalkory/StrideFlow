@@ -8,9 +8,11 @@ StrideFlow is a monolithic ASP.NET 8 + React pedometer platform focused on clean
 - Live walking sessions with route plotting on a real map.
 - Daily, weekly, and monthly leaderboards with city filtering.
 - Telegram Stars reward preview for weekly and monthly top performers.
+- Reward Center API with weekly/monthly city standing, payout eligibility, and test-mode settlement status.
+- Smart Coach insights with daily action plan, consistency score, and achievement progress.
 - Placeholder ad inventory exposed through the API for future sponsor insertion.
 - React dashboard with live map, history, profile management, and demo-mode tracking for desktop showcases.
-- Integration tests covering all API endpoints with PostgreSQL and Redis containers.
+- Integration tests covering API endpoints, SignalR negotiation, validation, and domain error paths with PostgreSQL and Redis containers.
 
 ## Architecture
 

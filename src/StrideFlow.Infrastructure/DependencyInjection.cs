@@ -5,6 +5,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
 using StackExchange.Redis;
 using StrideFlow.Application.Abstractions.Auth;
+using StrideFlow.Application.Abstractions.Engagement;
 using StrideFlow.Application.Abstractions.Tracking;
 using StrideFlow.Application.Abstractions.Users;
 using StrideFlow.Application.Configuration;
@@ -65,6 +66,8 @@ public static class DependencyInjection
         services.AddScoped<IPasswordHasher<User>, PasswordHasher<User>>();
 
         services.AddScoped<IAuthService, AuthService>();
+        services.AddScoped<IInsightsService, InsightsService>();
+        services.AddScoped<IRewardsService, RewardsService>();
         services.AddScoped<ITrackingService, TrackingService>();
         services.AddScoped<IUserService, UserService>();
         services.AddSingleton<IAdService, AdService>();

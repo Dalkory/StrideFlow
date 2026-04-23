@@ -1,5 +1,6 @@
 import type {
   AdSlotResponse,
+  ActivityInsightsResponse,
   AuthResponse,
   AuthSession,
   DashboardResponse,
@@ -15,6 +16,7 @@ import type {
   UserProfileResponse,
   WalkingSessionDetailResponse,
   WalkingSessionResponse,
+  RewardSummaryResponse,
 } from './types'
 
 const AUTH_STORAGE_KEY = 'strideflow.auth'
@@ -225,6 +227,14 @@ class ApiClient {
 
   getAdSlots(): Promise<AdSlotResponse[]> {
     return this.request<AdSlotResponse[]>('/api/ads/slots')
+  }
+
+  getRewardsSummary(): Promise<RewardSummaryResponse> {
+    return this.request<RewardSummaryResponse>('/api/rewards/summary')
+  }
+
+  getInsights(): Promise<ActivityInsightsResponse> {
+    return this.request<ActivityInsightsResponse>('/api/insights')
   }
 
   private async request<T>(

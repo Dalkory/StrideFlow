@@ -65,6 +65,56 @@ export interface RewardTierResponse {
   telegram_stars: number
 }
 
+export interface RewardStandingResponse {
+  period: LeaderboardPeriod
+  city: string
+  starts_at: string
+  ends_at: string
+  rank: number
+  steps: number
+  distance_meters: number
+  telegram_stars: number | null
+  is_eligible: boolean
+  status: string
+}
+
+export interface RewardSummaryResponse {
+  payout_provider: string
+  is_test_mode: boolean
+  settlement_policy: string
+  weekly: RewardStandingResponse
+  monthly: RewardStandingResponse
+  weekly_tiers: RewardTierResponse[]
+  monthly_tiers: RewardTierResponse[]
+}
+
+export interface AchievementResponse {
+  key: string
+  title: string
+  description: string
+  tone: string
+  is_unlocked: boolean
+  progress_percent: number
+  current_value: number
+  target_value: number
+}
+
+export interface ActivityCoachResponse {
+  daily_goal: number
+  remaining_steps_today: number
+  suggested_steps_per_hour: number
+  weekly_average_steps: number
+  consistency_score: number
+  message: string
+  achievements: AchievementResponse[]
+}
+
+export interface ActivityInsightsResponse {
+  generated_at: string
+  coach: ActivityCoachResponse
+  rewards: RewardSummaryResponse
+}
+
 export interface LeaderboardEntryResponse {
   user_id: string
   display_name: string
