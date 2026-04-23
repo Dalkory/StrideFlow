@@ -1,16 +1,16 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.RateLimiting;
+using StrideFlow.Api.Definitions;
 using StrideFlow.Application.Abstractions.Auth;
 using StrideFlow.Application.Abstractions.Tracking;
 using StrideFlow.Application.Models.Sessions;
 
 namespace StrideFlow.Api.Controllers;
 
-[ApiController]
 [Authorize]
 [Route("api/sessions")]
-public class SessionsController(ITrackingService trackingService, ICurrentUserService currentUserService) : ControllerBase
+public class SessionsController(ITrackingService trackingService, ICurrentUserService currentUserService) : ApiController
 {
     [HttpPost]
     public async Task<IActionResult> Start([FromBody] StartSessionRequest request, CancellationToken cancellationToken)
@@ -41,7 +41,7 @@ public class SessionsController(ITrackingService trackingService, ICurrentUserSe
     }
 
     [HttpPost("{sessionId:guid}/points")]
-    [EnableRateLimiting("tracking")]
+    [EnableRateLimiting(RateLimiterDefinition.TrackingPolicy)]
     public async Task<IActionResult> AddPoints(Guid sessionId, [FromBody] TrackSessionPointsRequest request, CancellationToken cancellationToken)
     {
         var response = await trackingService.AddPointsAsync(currentUserService.GetRequiredUserId(), sessionId, request, cancellationToken);

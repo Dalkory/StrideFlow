@@ -4,10 +4,9 @@ using StrideFlow.Application.Abstractions.Tracking;
 
 namespace StrideFlow.Api.Controllers;
 
-[ApiController]
 [Authorize]
 [Route("api/live")]
-public class LiveController(ITrackingService trackingService) : ControllerBase
+public class LiveController(ITrackingService trackingService) : ApiController
 {
     [HttpGet("map")]
     public async Task<IActionResult> Map(CancellationToken cancellationToken)

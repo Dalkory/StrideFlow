@@ -4,10 +4,9 @@ using StrideFlow.Application.Abstractions.Users;
 
 namespace StrideFlow.Api.Controllers;
 
-[ApiController]
 [Authorize]
 [Route("api/ads")]
-public class AdsController(IAdService adService) : ControllerBase
+public class AdsController(IAdService adService) : ApiController
 {
     [HttpGet("slots")]
     public async Task<IActionResult> GetSlots(CancellationToken cancellationToken)

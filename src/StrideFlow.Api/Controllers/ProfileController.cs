@@ -6,10 +6,9 @@ using StrideFlow.Application.Models.Users;
 
 namespace StrideFlow.Api.Controllers;
 
-[ApiController]
 [Authorize]
 [Route("api/profile")]
-public class ProfileController(IUserService userService, ICurrentUserService currentUserService) : ControllerBase
+public class ProfileController(IUserService userService, ICurrentUserService currentUserService) : ApiController
 {
     [HttpGet]
     public async Task<IActionResult> Get(CancellationToken cancellationToken)

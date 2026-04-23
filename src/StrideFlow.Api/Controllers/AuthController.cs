@@ -1,16 +1,16 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.RateLimiting;
+using StrideFlow.Api.Definitions;
 using StrideFlow.Api.Extensions;
 using StrideFlow.Application.Abstractions.Auth;
 using StrideFlow.Application.Models.Auth;
 
 namespace StrideFlow.Api.Controllers;
 
-[ApiController]
 [Route("api/auth")]
-[EnableRateLimiting("auth")]
-public class AuthController(IAuthService authService, ICurrentUserService currentUserService) : ControllerBase
+[EnableRateLimiting(RateLimiterDefinition.AuthPolicy)]
+public class AuthController(IAuthService authService, ICurrentUserService currentUserService) : ApiController
 {
     [HttpPost("register")]
     [AllowAnonymous]

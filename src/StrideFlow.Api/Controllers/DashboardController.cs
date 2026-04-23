@@ -5,10 +5,9 @@ using StrideFlow.Application.Abstractions.Users;
 
 namespace StrideFlow.Api.Controllers;
 
-[ApiController]
 [Authorize]
 [Route("api/dashboard")]
-public class DashboardController(IUserService userService, ICurrentUserService currentUserService) : ControllerBase
+public class DashboardController(IUserService userService, ICurrentUserService currentUserService) : ApiController
 {
     [HttpGet]
     public async Task<IActionResult> Get(CancellationToken cancellationToken)

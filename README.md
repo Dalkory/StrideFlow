@@ -17,9 +17,11 @@ StrideFlow is a monolithic ASP.NET 8 + React pedometer platform focused on clean
 - `src/StrideFlow.Domain`: domain entities and invariants.
 - `src/StrideFlow.Application`: contracts, DTOs, validation, configuration models.
 - `src/StrideFlow.Infrastructure`: EF Core, Redis live-session store, auth and application services.
-- `src/StrideFlow.Api`: controllers, SignalR hub, middleware, runtime composition, SPA hosting.
+- `src/StrideFlow.Api`: controllers, SignalR hub, middleware, SPA hosting, and Frame-style startup definitions.
 - `src/StrideFlow.ClientApp`: Vite + React frontend.
 - `tests/StrideFlow.IntegrationTests`: end-to-end API coverage using Testcontainers.
+
+Runtime composition follows a definition-based approach: `Program.cs` stays minimal, while logging, database migrations, web pipeline, JWT auth, SignalR, Swagger, CORS, rate limiting, endpoints, and SPA hosting live in focused classes under `src/StrideFlow.Api/Definitions`.
 
 ## Local development
 
