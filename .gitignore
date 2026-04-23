@@ -1,0 +1,27 @@
+# Build outputs
+**/bin/
+**/obj/
+
+# Frontend artifacts
+src/StrideFlow.ClientApp/node_modules/
+src/StrideFlow.ClientApp/dist/
+
+# IDE and editor folders
+.idea/
+.vs/
+.vscode/
+
+# Test artifacts
+TestResults/
+coverage/
+
+# Local environment files
+.env
+.env.local
+.env.*.local
+!.env.example
+!src/StrideFlow.ClientApp/.env.example
+
+# OS files
+.DS_Store
+Thumbs.db

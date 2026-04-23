@@ -1,0 +1,8 @@
+.git
+.gitignore
+**/bin
+**/obj
+tests
+src/StrideFlow.ClientApp/node_modules
+src/StrideFlow.ClientApp/dist
+README.md
